@@ -6,7 +6,7 @@ import re
 from io import BytesIO
 from fontTools.ttLib import TTFont
 from knn_font import Classify
-
+from bs4 import BeautifulSoup
 
 classify = Classify()
 
@@ -31,7 +31,8 @@ def get_map(text):
 def get_board():
     url = 'https://maoyan.com/board/1'
     headers = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36'
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
+        'Cookie':'__mta=146543243.1619267423184.1619267423184.1619267423184.1; uuid_n_v=v1; uuid=D620F1A0A4F811EBAABD97F290011CA3AEDDB8930CDE4286A9AB3B52AE4113AD; _csrf=5aa9d336c040959f8018d1f74fc49682dc52b63b5d9d613028c9f0a576f6d37d;'
     }
     text = requests.get(url, headers=headers).text
 
@@ -54,13 +55,38 @@ def get_board():
             list(map(lambda x: x.strip(), p_li[0].xpath('.//text()'))))
         total_stont = ''.join(
             list(map(lambda x: x.strip(), p_li[1].xpath('.//text()'))))
-        print(title)
-        print(star)
-        print(releasetime)
-        print(realtime_stont)
-        print(total_stont)
+        print(title,star,releasetime,realtime_stont,total_stont)
         print('-' * 50)
 
 
+def get_detail():
+    url = 'https://maoyan.com/films/1221'
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
+        'Cookie':'__mta=146543243.1619267423184.1619267423184.1619267423184.1; uuid_n_v=v1; uuid=D620F1A0A4F811EBAABD97F290011CA3AEDDB8930CDE4286A9AB3B52AE4113AD; _csrf=5aa9d336c040959f8018d1f74fc49682dc52b63b5d9d613028c9f0a576f6d37d;'
+    }
+    text = requests.get(url, headers=headers).text
+    map_dict = get_map(text)
+    for uni in map_dict.keys():
+        text = text.replace(uni, map_dict[uni])
+    soup = BeautifulSoup(text,'lxml')
+    title = soup.select('div.movie-brief-container > h1')[0].string
+    stats = soup.select('div.movie-stats-container')[0]
+    score_num = stats.select('.score-num span')[0].get_text()
+    info_num = stats.select('.info-num span')[0].get_text()
+    prize_box = stats.select('.box span')[0].get_text()
+    scrape_data = {
+        'title':title,
+        'info_num':info_num,
+        'score_num':score_num,
+        'prize_box':prize_box
+    }
+    print(scrape_data)
+    # print(info_num)
+    # print(score_num)
+    # print(prize_box)
+    
+
 if __name__ == '__main__':
-    get_board()
+    get_detail()
+    # get_board()
