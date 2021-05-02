@@ -1,14 +1,3 @@
-# knn-font
-使用sklearn库调用knn算法实现猫眼字体识别
-
-本来想跟随大佬的脚步在猫眼电影实践一波knn（k近邻算法），没想到猫眼电影现在的字体文件是静态的（20210502）。只能使用archive找了几个网址曾出现过的woff字体文件加上这个仓库本来就有的5个一共10个字体文件，一个woff字体10个字符共100个数据。  
-
-因为现在字体文件是静态的用knn有点杀鸡用牛刀了，但是训练数据包含了**目前的静态的字体文件**按照knn k取1的算法 预测的准确率必定是100%，就算网址之后改回动态字体该方法仍然适用。  
-
-
-
-```
-<!-- 核心knn 算法调用sklearn实现 -->
 import numpy as np 
 import pandas as pd
 from font import get_font_data
@@ -22,7 +11,16 @@ import pickle
 def main():
 	# 处理缺失值
 	imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+	
+	# data1 = imputer.fit_transform(pd.DataFrame(get_font_data()))
+	# numpy 取出特征值\目标值
+	# x = data1[:,1:]
+	# y = data1[:,0]
+	# print(x.shape)
+
 	data = pd.DataFrame(imputer.fit_transform(pd.DataFrame(get_font_data())))
+	# print(data)
+	# data.to_csv('data.csv')
 
 	# 取出特征值\目标值
 	x = data.drop([0], axis=1)
@@ -68,16 +66,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-```
-
-## 最终效果
-
-![](./pic/01.png)
-
-
-## 完整代码
-[](./test.py)
-
-## 其他
-在数据准备过程中使用了numpy和pandas的常规操作借此机会熟悉一下  
-另外B站上莫凡大佬的机器学习课真不错（入门必备）  
