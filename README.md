@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
 
 ## 完整代码
-[](./test.py)
+[](https://github.com/skygongque/knn-font/blob/master/test.py)
 
 ## 其他
 在数据准备过程中使用了numpy和pandas的常规操作借此机会熟悉一下  
